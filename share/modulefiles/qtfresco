@@ -1,0 +1,16 @@
+#%Module1.0
+##
+## modules qtfresco
+##
+## modulefiles/qtfresco
+##
+proc ModulesHelp {} {
+	global version modroot
+
+	puts stderr "qtfresco - Tools built using qt to make fresco easier to use"
+}
+module-whatis "Tools built using qt to make fresco easier to use"
+
+set topdir 	@CMAKE_INSTALL_PREFIX@
+
+prepend-path PATH	$topdir/bin

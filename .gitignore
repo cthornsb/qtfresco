@@ -1,0 +1,10 @@
+# CMake directories #
+#####################
+*.o
+build/
+install/
+
+# ROOT Files #
+##############
+*.root
+*.pcm
