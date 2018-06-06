@@ -4,6 +4,7 @@
 
 #include "graphPlotter.hpp"
 #include "frescout.hpp"
+#include "readGrace.hpp"
 
 #include "TFile.h"
 #include "TGraph.h"
@@ -78,7 +79,7 @@ bool graphPlotter::runFresco(const std::string &inputFilename){
     return (system(call.c_str()) == 0);
 }
 
-bool graphPlotter::runFrescout(double &integral, const bool &cleanup/*=true*/){
+bool graphPlotter::runFrescout(double &integral){
     // Copy the current graph to the previous one.
     double x, y;
     for(int i = 0; i < 181; i++){
@@ -86,11 +87,26 @@ bool graphPlotter::runFrescout(double &integral, const bool &cleanup/*=true*/){
         prevGraph->SetPoint(i, x, y);
     }
 
+    if(debug) std::cout << " debug: Reading from fresco stdout file \"qtfresco.tmp.out\".\n";
+
     // Call frescout to parse the output from fresco.
     bool retval = frescout("qtfresco.tmp.out", currGraph, integral, debug);
 
-	if(cleanup) // Remove the intermediate file.
-		remove("qtfresco.tmp.out");
+    return retval;
+}
+
+bool graphPlotter::runReadGrace(const std::string &filename, double &integral){
+    // Copy the current graph to the previous one.
+    double x, y;
+    for(int i = 0; i < 181; i++){
+        currGraph->GetPoint(i, x, y);
+        prevGraph->SetPoint(i, x, y);
+    }
+
+    if(debug) std::cout << " debug: Reading from fresco output file \"" << filename << "\".\n";
+
+    // Call readGrace to parse the output file from fresco.
+    bool retval = readGrace(filename, currGraph, integral, debug);
 
     return retval;
 }

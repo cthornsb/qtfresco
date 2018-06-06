@@ -52,6 +52,10 @@ private slots:
 
     void on_radioButton_print_clicked();
 
+    void on_radioButton_stdout_clicked();
+
+    void on_radioButton_fortXX_clicked();
+
 	void handleCleanup();
 
 	void handleUpdate();

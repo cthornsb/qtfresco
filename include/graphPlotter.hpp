@@ -25,7 +25,9 @@ class graphPlotter {
 
     bool runFresco(const std::string &inputFilename);
 
-    bool runFrescout(double &integral, const bool &cleanup=true);
+    bool runFrescout(double &integral);
+
+    bool runReadGrace(const std::string &filename, double &integral);
 
 	int write(const std::string &filename, const int &format, const std::string &name="graph", const bool &overwrite=true);
 
