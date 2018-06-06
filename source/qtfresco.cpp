@@ -54,18 +54,21 @@ void MainWindow::on_pushButton_run_clicked()
 {
     if(!ui->lineEdit_input->text().isEmpty()){
         double totalIntegral;
-        if(ptr->runFresco(ui->lineEdit_input->text().toStdString().c_str()) && ptr->runFrescout(totalIntegral, ui->checkBox_cleanup->isChecked())){
-            // Draw the distribution if the calculation completed successfully.
-			ptr->redraw(ui->checkBox_drawPrev->isChecked());
+        if(ptr->runFresco(ui->lineEdit_input->text().toStdString().c_str())){
+	    if(ptr->runFrescout(totalIntegral, ui->checkBox_cleanup->isChecked())){
+                // Draw the distribution if the calculation completed successfully.
+		ptr->redraw(ui->checkBox_drawPrev->isChecked());
         
-            // Print the total integral in the window.
-            std::stringstream stream; stream << totalIntegral;
-            QString str = QString::fromStdString(stream.str());
-            ui->lineEdit_integral->setText(str);
+                // Print the total integral in the window.
+                std::stringstream stream; stream << totalIntegral;
+                QString str = QString::fromStdString(stream.str());
+                ui->lineEdit_integral->setText(str);
             
-            // Write graph to file if user has requested to save all graphs.
-            if(ui->checkBox_saveAll->isChecked())
-            	on_pushButton_save_clicked();
+                // Write graph to file if user has requested to save all graphs.
+                if(ui->checkBox_saveAll->isChecked())
+            	    on_pushButton_save_clicked();
+            }
+            else std::cout << " ERROR! Frescout method failed to scan fresco output.\n";
         }
         else std::cout << " ERROR! Failed to run fresco.\n";
     }
