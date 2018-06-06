@@ -12,12 +12,12 @@ class MainWindow;
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+	explicit MainWindow(QWidget *parent = 0);
 
-    ~MainWindow();
+	~MainWindow();
 
 	void setPointer(graphPlotter *ptr_){ ptr = ptr_; }
 	
@@ -30,44 +30,44 @@ public:
 	void finalize();
 
 private slots:
-    void on_pushButton_run_clicked();
+	void on_pushButton_run_clicked();
 
-    void on_pushButton_save_clicked();
+	void on_pushButton_save_clicked();
 
-    void on_pushButton_reset_clicked();
+	void on_pushButton_reset_clicked();
 
 	void on_pushButton_redraw_clicked();
 
-    void on_pushButton_quit_clicked();
+	void on_pushButton_quit_clicked();
 
-    void disableRadio();
+	void disableRadio();
 
-    void enableRadio();
+	void enableRadio();
 
-    void on_radioButton_tgraph_clicked();
+	void on_radioButton_tgraph_clicked();
 
-    void on_radioButton_tcanvas_clicked();
+	void on_radioButton_tcanvas_clicked();
 
-    void on_radioButton_ascii_clicked();
+	void on_radioButton_ascii_clicked();
 
-    void on_radioButton_print_clicked();
+	void on_radioButton_print_clicked();
 
-    void on_radioButton_stdout_clicked();
+	void on_radioButton_stdout_clicked();
 
-    void on_radioButton_fortXX_clicked();
+	void on_radioButton_fortXX_clicked();
 
 	void handleCleanup();
 
 	void handleUpdate();
 
-    void on_checkBox_debug_clicked();
+	void on_checkBox_debug_clicked();
 
 private:
-    Ui::MainWindow *ui;
-    
-    QTimer *idleTimer;
-    
-    graphPlotter *ptr;
+	Ui::MainWindow *ui;
+	
+	QTimer *idleTimer;
+	
+	graphPlotter *ptr;
 };
 
 #endif // QTFRESCO_H

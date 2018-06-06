@@ -28,10 +28,10 @@ graphPlotter::graphPlotter() {
 	currGraph->SetLineWidth(2);
 	prevGraph->SetLineWidth(2);
 	
-    currGraph->SetLineColor(kBlue+2);
+	currGraph->SetLineColor(kBlue+2);
 	prevGraph->SetLineColor(kRed);
 	
-    debug = false;
+	debug = false;
 
 	redraw();
 }
@@ -45,20 +45,20 @@ graphPlotter::~graphPlotter(){
 }
 
 void graphPlotter::reset(){
-    can->Clear();
+	can->Clear();
 
-    for(int i = 0; i < 181; i++){
-        currGraph->SetPoint(i, 0, 0);
-        prevGraph->SetPoint(i, 0, 0);
-    }
+	for(int i = 0; i < 181; i++){
+		currGraph->SetPoint(i, 0, 0);
+		prevGraph->SetPoint(i, 0, 0);
+	}
 }
 
 void graphPlotter::redraw(const bool &prev_/*=false*/){
 	can->Clear();
 
-    currGraph->Draw("AL");
+	currGraph->Draw("AL");
 	if(prev_) 
-        prevGraph->Draw("LSAME");
+		prevGraph->Draw("LSAME");
 	
 	can->Update();
 }
@@ -68,47 +68,47 @@ void graphPlotter::idleTask(){
 }
 
 bool graphPlotter::runFresco(const std::string &inputFilename){
-    const std::string frescoSystemCall(FRESCO_SYSTEM_CALL);
+	const std::string frescoSystemCall(FRESCO_SYSTEM_CALL);
 
-    // fresco < ${INPUT_FILENAME} > fresco.out
-    std::string call = frescoSystemCall + " < " + inputFilename + " > qtfresco.tmp.out";
+	// fresco < ${INPUT_FILENAME} > fresco.out
+	std::string call = frescoSystemCall + " < " + inputFilename + " > qtfresco.tmp.out";
 
-    if(debug) std::cout << " debug: `" << call << "`\n";
+	if(debug) std::cout << " debug: `" << call << "`\n";
 
-    // Do the system call for fresco.
-    return (system(call.c_str()) == 0);
+	// Do the system call for fresco.
+	return (system(call.c_str()) == 0);
 }
 
 bool graphPlotter::runFrescout(double &integral){
-    // Copy the current graph to the previous one.
-    double x, y;
-    for(int i = 0; i < 181; i++){
-        currGraph->GetPoint(i, x, y);
-        prevGraph->SetPoint(i, x, y);
-    }
+	// Copy the current graph to the previous one.
+	double x, y;
+	for(int i = 0; i < 181; i++){
+		currGraph->GetPoint(i, x, y);
+		prevGraph->SetPoint(i, x, y);
+	}
 
-    if(debug) std::cout << " debug: Reading from fresco stdout file \"qtfresco.tmp.out\".\n";
+	if(debug) std::cout << " debug: Reading from fresco stdout file \"qtfresco.tmp.out\".\n";
 
-    // Call frescout to parse the output from fresco.
-    bool retval = frescout("qtfresco.tmp.out", currGraph, integral, debug);
+	// Call frescout to parse the output from fresco.
+	bool retval = frescout("qtfresco.tmp.out", currGraph, integral, debug);
 
-    return retval;
+	return retval;
 }
 
 bool graphPlotter::runReadGrace(const std::string &filename, double &integral){
-    // Copy the current graph to the previous one.
-    double x, y;
-    for(int i = 0; i < 181; i++){
-        currGraph->GetPoint(i, x, y);
-        prevGraph->SetPoint(i, x, y);
-    }
+	// Copy the current graph to the previous one.
+	double x, y;
+	for(int i = 0; i < 181; i++){
+		currGraph->GetPoint(i, x, y);
+		prevGraph->SetPoint(i, x, y);
+	}
 
-    if(debug) std::cout << " debug: Reading from fresco output file \"" << filename << "\".\n";
+	if(debug) std::cout << " debug: Reading from fresco output file \"" << filename << "\".\n";
 
-    // Call readGrace to parse the output file from fresco.
-    bool retval = readGrace(filename, currGraph, integral, debug);
+	// Call readGrace to parse the output file from fresco.
+	bool retval = readGrace(filename, currGraph, integral, debug);
 
-    return retval;
+	return retval;
 }
 
 int graphPlotter::write(const std::string &filename, const int &format, const std::string &name/*="graph"*/, const bool &overwrite/*=true*/){

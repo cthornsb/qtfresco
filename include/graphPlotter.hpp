@@ -15,19 +15,19 @@ class graphPlotter {
 	
 	~graphPlotter();
 
-    bool toggleDebug(){ return (debug = !debug); }
+	bool toggleDebug(){ return (debug = !debug); }
 
-    void reset();
+	void reset();
 
 	void redraw(const bool &prev_=false);
 	
 	void idleTask();
 
-    bool runFresco(const std::string &inputFilename);
+	bool runFresco(const std::string &inputFilename);
 
-    bool runFrescout(double &integral);
+	bool runFrescout(double &integral);
 
-    bool runReadGrace(const std::string &filename, double &integral);
+	bool runReadGrace(const std::string &filename, double &integral);
 
 	int write(const std::string &filename, const int &format, const std::string &name="graph", const bool &overwrite=true);
 
@@ -37,7 +37,7 @@ class graphPlotter {
 	TGraph *currGraph;
 	TGraph *prevGraph;
 
-    bool debug;
+	bool debug;
 	
 	int appendObjectToFile(TFile *f, TObject *obj, const std::string &name);
 };

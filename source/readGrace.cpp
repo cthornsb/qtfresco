@@ -35,7 +35,7 @@ bool readGrace(const std::string &filename, TGraph *graph, double &integral, con
 	if(debug){
 		std::cout << " debug: Cross-section data follows...\n";
 		std::cout << "thetaCM\txsection\n";
-	    }
+		}
 
 	bool isdone = false;
 	std::string line;
@@ -90,9 +90,9 @@ bool readGrace(const std::string &filename, TGraph *graph, double &integral, con
 	integral = 0;
 	double solidAngle;
 	for(size_t i = 1; i < thetaCM.size(); i++){
-	    solidAngle = 2*pi*(std::cos(thetaCM.at(i-1)*pi/180)-std::cos(thetaCM.at(i)*pi/180));
-	    integral += 0.5*solidAngle*(xsection.at(i)+xsection.at(i-1));
-	    graph->SetPoint(i, thetaCM.at(i), xsection.at(i));
+		solidAngle = 2*pi*(std::cos(thetaCM.at(i-1)*pi/180)-std::cos(thetaCM.at(i)*pi/180));
+		integral += 0.5*solidAngle*(xsection.at(i)+xsection.at(i-1));
+		graph->SetPoint(i, thetaCM.at(i), xsection.at(i));
 	}
 
 	return true;
