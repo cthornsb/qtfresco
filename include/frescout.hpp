@@ -5,7 +5,7 @@
 
 class TGraph;
 
-bool frescout(const std::string &filename, TGraph *graph, double &integral, const bool &debug=false);
+bool frescout(const std::string &filename, TGraph *graph, double &integral, const std::string &searchString2, const bool &debug=false);
 
 #endif // FRESCOUT_HPP
 

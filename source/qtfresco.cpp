@@ -57,11 +57,11 @@ void MainWindow::on_pushButton_run_clicked()
 		if(ptr->runFresco(ui->lineEdit_input->text().toStdString().c_str())){
 			bool retval;
 			if(ui->radioButton_stdout->isChecked()){ // Run frescout on stdout.
-				retval = ptr->runFrescout(totalIntegral);
+				retval = ptr->runFrescout(ui->lineEdit_searchStr->text().toStdString(), totalIntegral);
 				if(!retval) std::cout << " ERROR! Frescout method failed to find any cross-section data.\n";
 			}
 			else{
-			std::stringstream stream;
+				std::stringstream stream;
 				stream << "fort." << ui->spinBox_fortXX->value();
 				retval = ptr->runReadGrace(stream.str(), totalIntegral);
 				if(!retval) std::cout << " ERROR! ReadGrace method failed to find any cross-section data from \"" << stream.str() << "\".\n";
@@ -191,12 +191,16 @@ void MainWindow::on_radioButton_print_clicked()
 
 void MainWindow::on_radioButton_stdout_clicked()
 {
+	ui->label_searchStr->setEnabled(true);
+	ui->lineEdit_searchStr->setEnabled(true);
 	ui->label_fortXX->setDisabled(true);
 	ui->spinBox_fortXX->setDisabled(true);
 }
 
 void MainWindow::on_radioButton_fortXX_clicked()
 {
+	ui->label_searchStr->setDisabled(true);
+	ui->lineEdit_searchStr->setDisabled(true);
 	ui->label_fortXX->setEnabled(true);
 	ui->spinBox_fortXX->setEnabled(true);
 }

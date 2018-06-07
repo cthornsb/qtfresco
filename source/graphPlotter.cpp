@@ -79,7 +79,7 @@ bool graphPlotter::runFresco(const std::string &inputFilename){
 	return (system(call.c_str()) == 0);
 }
 
-bool graphPlotter::runFrescout(double &integral){
+bool graphPlotter::runFrescout(const std::string &searchString, double &integral){
 	// Copy the current graph to the previous one.
 	double x, y;
 	for(int i = 0; i < 181; i++){
@@ -90,7 +90,7 @@ bool graphPlotter::runFrescout(double &integral){
 	if(debug) std::cout << " debug: Reading from fresco stdout file \"qtfresco.tmp.out\".\n";
 
 	// Call frescout to parse the output from fresco.
-	bool retval = frescout("qtfresco.tmp.out", currGraph, integral, debug);
+	bool retval = frescout("qtfresco.tmp.out", currGraph, integral, searchString, debug);
 
 	return retval;
 }

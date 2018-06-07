@@ -10,9 +10,8 @@
 
 const double pi = 3.1415926536;
 
-bool frescout(const std::string &filename, TGraph *graph, double &integral, const bool &debug/*=false*/){
+bool frescout(const std::string &filename, TGraph *graph, double &integral, const std::string &searchString2, const bool &debug/*=false*/){
 	const std::string searchString1 = "CROSS SECTIONS FOR OUTGOING";
-	const std::string searchString2 = "NEUTRON  &";
 
 	std::ifstream file(filename.c_str());
 	if(!file.good()) return false;

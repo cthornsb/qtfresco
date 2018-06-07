@@ -25,7 +25,7 @@ class graphPlotter {
 
 	bool runFresco(const std::string &inputFilename);
 
-	bool runFrescout(double &integral);
+	bool runFrescout(const std::string &searchString, double &integral);
 
 	bool runReadGrace(const std::string &filename, double &integral);
 
