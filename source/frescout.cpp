@@ -28,19 +28,25 @@ bool frescout(const std::string &filename, TGraph *graph, double &integral, cons
 		if(file.eof()) break;
 
 		if(!scanning){
-			if(line.find(searchString1) != std::string::npos && line.find(searchString2) != std::string::npos){
-				if(debug){
-					std::cout << " debug: \"" << line << "\"" << std::endl;
-					std::cout << " debug: Cross-section data follows...\n";
-					std::cout << "thetaCM\txsection\n";
+			if(line.find(searchString1) != std::string::npos){
+				if(line.find(searchString2) != std::string::npos){
+					if(debug){
+						std::cout << " debug: \"" << line << "\"" << std::endl;
+						std::cout << " debug: Cross-section data follows...\n";
+						std::cout << "thetaCM\txsection\n";
+					}
+					scanning = true;
+					continue;
 				}
-				scanning = true;
-				continue;
+				else if(debug){
+					size_t index1 = line.find(searchString1) + searchString1.length();
+					std::string partition = line.substr(index1, line.find("in state #")-index1);
+					std::cout << " debug: Found cross-section output for \"" << partition << "\", but not for \"" << searchString2 << "\".\n";
+				}
 			}
 		}
 		else{
 			if(line.find("Integrated") != std::string::npos){
-				scanning = false;
 				break;
 			}
 			// Extract the x-section.
@@ -63,6 +69,9 @@ bool frescout(const std::string &filename, TGraph *graph, double &integral, cons
 		}
 	}
 	file.close();
+
+	if(debug && !scanning)
+		std::cout << " debug: Failed to find search strings \"" << searchString1 << "\" and/or \"" << searchString2 << "\" in stdout.\n";
 
 	// Failed to find any cross-section data.
 	if(thetaCM.empty()) return false;
