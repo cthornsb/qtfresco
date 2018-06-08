@@ -29,6 +29,8 @@ MainWindow::~MainWindow()
 
 	delete ui;
 	delete idleTimer;
+
+	// This must be last because TApplication will terminate the program.
 	if(ptr) delete ptr;
 }
 
@@ -153,7 +155,9 @@ void MainWindow::on_pushButton_reset_clicked()
 
 void MainWindow::on_pushButton_quit_clicked()
 {
-	QCoreApplication::quit();
+	// This is a hack, but it avoids seg-faults due to TApplication.
+	//QCoreApplication::quit();
+	delete this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

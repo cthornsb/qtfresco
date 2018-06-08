@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "TApplication.h"
+
 class TCanvas;
 class TGraph;
 class TGraphErrors;
@@ -11,7 +13,7 @@ class TFile;
 
 class TObject;
 
-class graphPlotter {
+class graphPlotter : public TApplication {
   public:
 	graphPlotter();
 	

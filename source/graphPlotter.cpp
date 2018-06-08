@@ -27,10 +27,7 @@ void setGraphStyle(TGraph *g, const Color_t &color){
 	g->GetYaxis()->SetTitle("d#sigma/d#Omega (mb/sr)");
 }
 
-graphPlotter::graphPlotter() {
-	// Enable root graphics.
-	new TApplication("rootapp", 0, 0);
-
+graphPlotter::graphPlotter() : TApplication("rootapp", 0, 0) { // Enable root graphics.
 	can = new TCanvas("can", "qtfresco");
 	can->cd()->SetFrameLineColor(kWhite);
 
@@ -59,6 +56,9 @@ graphPlotter::~graphPlotter(){
 		externalFile->Close();
 		delete externalFile;
 	}
+
+	// Call this last because it will terminate the program.
+	this->Terminate();
 }
 
 void graphPlotter::reset(){
