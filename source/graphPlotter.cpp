@@ -10,28 +10,35 @@
 #include "TGraph.h"
 #include "TGraphErrors.h"
 #include "TCanvas.h"
+#include "TAxis.h"
 
 #include "TSystem.h"
 #include "TApplication.h"
 
 #define FRESCO_SYSTEM_CALL "fresco"
 
+void setGraphStyle(TGraph *g, const Color_t &color){
+	g->SetLineWidth(2);
+	g->SetLineColor(color);
+
+	g->SetTitle("");
+	g->GetXaxis()->SetTitle("#theta_{CM} (deg)");
+	g->GetYaxis()->SetTitle("d#sigma/d#Omega (mb/sr)");
+}
+
 graphPlotter::graphPlotter() {
 	// Enable root graphics.
 	new TApplication("rootapp", 0, 0);
 
 	can = new TCanvas("can", "qtfresco");
-	can->cd();
+	can->cd()->SetFrameLineColor(kWhite);
 
 	currGraph = new TGraph(181);
 	prevGraph = new TGraph(181);
-	
-	currGraph->SetLineWidth(2);
-	prevGraph->SetLineWidth(2);
-	
-	currGraph->SetLineColor(kBlue+2);
-	prevGraph->SetLineColor(kRed);
 
+	setGraphStyle(currGraph, kBlue+2);
+	setGraphStyle(prevGraph, kRed);
+	
 	dataGraph = NULL;
 	externalFile = NULL;
 
