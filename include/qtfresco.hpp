@@ -56,6 +56,12 @@ private slots:
 
 	void on_radioButton_fortXX_clicked();
 
+	void on_lineEdit_dataFilename_returnPressed();
+
+	void on_comboBox_dataObjName_currentIndexChanged();
+
+	void on_pushButton_drawData_clicked();
+
 	void handleCleanup();
 
 	void handleUpdate();

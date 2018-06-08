@@ -72,8 +72,12 @@ void MainWindow::on_pushButton_run_clicked()
 
 			if(retval){
 				// Draw the distribution if the calculation completed successfully.
-				ptr->redraw(ui->checkBox_drawPrev->isChecked());
+				ptr->draw(ui->checkBox_drawPrev->isChecked());
 				
+				// Draw the external data TGraph.
+				if(ui->checkBox_drawData->isChecked())
+					ptr->drawData(ui->lineEdit_dataDrawOpt->text().toStdString());
+
 				// Print the total integral in the window.
 				std::stringstream stream; stream << totalIntegral;
 				QString str = QString::fromStdString(stream.str());
@@ -126,7 +130,7 @@ void MainWindow::on_pushButton_save_clicked()
 
 void MainWindow::on_pushButton_redraw_clicked()
 {
-	ptr->redraw();
+	ptr->draw();
 }
 
 void MainWindow::on_pushButton_reset_clicked()
@@ -203,6 +207,40 @@ void MainWindow::on_radioButton_fortXX_clicked()
 	ui->lineEdit_searchStr->setDisabled(true);
 	ui->label_fortXX->setEnabled(true);
 	ui->spinBox_fortXX->setEnabled(true);
+}
+
+void MainWindow::on_lineEdit_dataFilename_returnPressed(){
+	if(ptr->loadExternalDataFile(ui->lineEdit_dataFilename->text().toStdString())){ // Open an external TFile.
+		std::vector<std::string> objNames;
+		if(ptr->readExternalDataFile(objNames)){ // Read the TFile and search for graphs.
+			ui->comboBox_dataObjName->setEnabled(true);
+			for(std::vector<std::string>::iterator iter = objNames.begin(); iter != objNames.end(); iter++){ // Add all names to the combo list.
+				ui->comboBox_dataObjName->addItem(QString::fromStdString(*iter));
+			}
+			ui->lineEdit_dataDrawOpt->setEnabled(true);
+			ui->pushButton_drawData->setEnabled(true);
+			ui->checkBox_drawData->setEnabled(true);
+		}
+	}
+	else{ // Failed to load the input file.
+		ui->comboBox_dataObjName->setDisabled(true);
+		ui->comboBox_dataObjName->clear();
+		ui->comboBox_dataObjName->addItem("NONE");
+		ui->lineEdit_dataDrawOpt->setDisabled(true);
+		ui->pushButton_drawData->setDisabled(true);
+		ui->checkBox_drawData->setDisabled(true);
+	}
+}
+
+void MainWindow::on_comboBox_dataObjName_currentIndexChanged(){
+	if(ui->comboBox_dataObjName->currentText() != "NONE") // User has selected an object from the file.
+		ptr->setExternalDataGraph(ui->comboBox_dataObjName->currentText().toStdString());
+	else // De-select all objects
+		ptr->setExternalDataGraph();
+}
+
+void MainWindow::on_pushButton_drawData_clicked(){
+	ptr->drawData(ui->lineEdit_dataDrawOpt->text().toStdString());
 }
 
 void MainWindow::handleCleanup(){

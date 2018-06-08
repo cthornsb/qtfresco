@@ -8,6 +8,7 @@
 
 #include "TFile.h"
 #include "TGraph.h"
+#include "TGraphErrors.h"
 #include "TCanvas.h"
 
 #include "TSystem.h"
@@ -30,10 +31,13 @@ graphPlotter::graphPlotter() {
 	
 	currGraph->SetLineColor(kBlue+2);
 	prevGraph->SetLineColor(kRed);
-	
+
+	dataGraph = NULL;
+	externalFile = NULL;
+
 	debug = false;
 
-	redraw();
+	draw();
 }
 
 graphPlotter::~graphPlotter(){ 
@@ -42,6 +46,11 @@ graphPlotter::~graphPlotter(){
 
 	delete currGraph;
 	delete prevGraph;
+
+	if(externalFile){
+		externalFile->Close();
+		delete externalFile;
+	}
 }
 
 void graphPlotter::reset(){
@@ -53,7 +62,7 @@ void graphPlotter::reset(){
 	}
 }
 
-void graphPlotter::redraw(const bool &prev_/*=false*/){
+void graphPlotter::draw(const bool &prev_/*=false*/){
 	can->Clear();
 
 	currGraph->Draw("AL");
@@ -61,6 +70,13 @@ void graphPlotter::redraw(const bool &prev_/*=false*/){
 		prevGraph->Draw("LSAME");
 	
 	can->Update();
+}
+
+void graphPlotter::drawData(const std::string &opt/*="PSAME"*/){
+	if(dataGraph){
+		dataGraph->Draw(opt.c_str());
+		can->Update();
+	}
 }
 
 void graphPlotter::idleTask(){
@@ -156,6 +172,32 @@ int graphPlotter::write(const std::string &filename, const int &format, const st
 	else return -9999;
 	
 	return retval;
+}
+
+bool graphPlotter::loadExternalDataFile(const std::string &filename){
+	if(externalFile){ // Load the external data file if it is open.
+		externalFile->Close();
+		delete externalFile;
+	}
+	externalFile = new TFile(filename.c_str());
+	if(!externalFile->IsOpen()) return false;
+	return true;
+}
+
+bool graphPlotter::readExternalDataFile(std::vector<std::string> &objNames){
+	if(!externalFile || !externalFile->IsOpen()) return false;
+	TList *keyList = externalFile->GetListOfKeys();
+	for(int i = 0; i < keyList->GetEntries(); i++){
+		if(debug) std::cout << " debug: " << i << " - " << keyList->At(i)->GetName() << std::endl;
+		objNames.push_back(std::string(keyList->At(i)->GetName()));
+	}
+	return true;
+}
+
+bool graphPlotter::setExternalDataGraph(const std::string &name){
+	if(!externalFile || !externalFile->IsOpen()) return false;
+	dataGraph = (TGraphErrors*)externalFile->Get(name.c_str());
+	return (dataGraph != NULL);
 }
 
 int graphPlotter::appendObjectToFile(TFile *f, TObject *obj, const std::string &name){

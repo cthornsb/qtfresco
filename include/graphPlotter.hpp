@@ -1,10 +1,12 @@
 #ifndef GRAPH_PLOTTER_HPP
 #define GRAPH_PLOTTER_HPP
 
+#include <vector>
 #include <string>
 
 class TCanvas;
 class TGraph;
+class TGraphErrors;
 class TFile;
 
 class TObject;
@@ -19,7 +21,9 @@ class graphPlotter {
 
 	void reset();
 
-	void redraw(const bool &prev_=false);
+	void draw(const bool &prev_=false);
+
+	void drawData(const std::string &opt="PSAME");
 	
 	void idleTask();
 
@@ -31,11 +35,22 @@ class graphPlotter {
 
 	int write(const std::string &filename, const int &format, const std::string &name="graph", const bool &overwrite=true);
 
+	bool loadExternalDataFile(const std::string &filename);
+
+	bool readExternalDataFile(std::vector<std::string> &objNames);
+
+	bool setExternalDataGraph(const std::string &name);
+
+	bool setExternalDataGraph(TGraphErrors *ptr=NULL){ return ((dataGraph=ptr) != NULL); }
+
   private:
 	TCanvas *can;
 	
 	TGraph *currGraph;
 	TGraph *prevGraph;
+	TGraphErrors *dataGraph;
+
+	TFile *externalFile;
 
 	bool debug;
 	
