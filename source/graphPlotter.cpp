@@ -61,12 +61,13 @@ graphPlotter::~graphPlotter(){
 }
 
 void graphPlotter::reset(){
-	can->Clear();
-
 	for(int i = 0; i < 181; i++){
 		currGraph->SetPoint(i, 0, 0);
 		prevGraph->SetPoint(i, 0, 0);
 	}
+
+	can->Clear();
+	can->Update();
 }
 
 void graphPlotter::draw(const bool &prev_/*=false*/){

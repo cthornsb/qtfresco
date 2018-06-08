@@ -67,6 +67,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_save">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -80,6 +83,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_reset">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -381,7 +387,10 @@
      <string>Last Index</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_redraw">
+   <widget class="QPushButton" name="pushButton_rescan">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>50</x>
@@ -391,7 +400,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Redraw</string>
+     <string>Re-Scan</string>
     </property>
    </widget>
    <widget class="Line" name="line_4">

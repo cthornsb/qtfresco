@@ -24,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+	if(ui->checkBox_cleanup->isChecked()) // Remove the intermediate file.
+		remove("qtfresco.tmp.out");
+
 	delete ui;
 	delete idleTimer;
 	if(ptr) delete ptr;
@@ -46,6 +49,42 @@ void MainWindow::finalize(){
 	if(ui->lineEdit_prefix->text().isEmpty()) ui->lineEdit_prefix->setText("graph");
 }
 
+bool MainWindow::scanFrescoOutput(){
+	double totalIntegral;
+	if(ui->radioButton_stdout->isChecked()){ // Run frescout on stdout.
+		if(!ptr->runFrescout(ui->lineEdit_searchStr->text().toStdString(), totalIntegral)){
+			std::cout << " ERROR! Frescout method failed to find any cross-section data.\n";
+			return false;
+		}
+	}
+	else{ // Run readGrace on fort output file.
+		std::stringstream stream;
+		stream << "fort." << ui->spinBox_fortXX->value();
+		if(!ptr->runReadGrace(stream.str(), totalIntegral)){
+			std::cout << " ERROR! ReadGrace method failed to find any cross-section data from \"" << stream.str() << "\".\n";
+			return false;
+		}
+	}
+
+	// Draw the distribution if the calculation completed successfully.
+	ptr->draw(ui->checkBox_drawPrev->isChecked());
+	
+	// Draw the external data TGraph.
+	if(ui->checkBox_drawData->isChecked())
+		ptr->drawData(ui->lineEdit_dataDrawOpt->text().toStdString());
+
+	// Print the total integral in the window.
+	std::stringstream stream; stream << totalIntegral;
+	QString str = QString::fromStdString(stream.str());
+	ui->lineEdit_integral->setText(str);
+		
+	// Write graph to file if user has requested to save all graphs.
+	if(ui->checkBox_saveAll->isChecked())
+		on_pushButton_save_clicked();
+
+	return true;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Push buttons
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,40 +92,11 @@ void MainWindow::finalize(){
 void MainWindow::on_pushButton_run_clicked()
 {
 	if(!ui->lineEdit_input->text().isEmpty()){
-		double totalIntegral;
+		ui->pushButton_save->setEnabled(true);
+		ui->pushButton_rescan->setEnabled(true);
+		ui->pushButton_reset->setEnabled(true);
 		if(ptr->runFresco(ui->lineEdit_input->text().toStdString().c_str())){
-			bool retval;
-			if(ui->radioButton_stdout->isChecked()){ // Run frescout on stdout.
-				retval = ptr->runFrescout(ui->lineEdit_searchStr->text().toStdString(), totalIntegral);
-				if(!retval) std::cout << " ERROR! Frescout method failed to find any cross-section data.\n";
-			}
-			else{
-				std::stringstream stream;
-				stream << "fort." << ui->spinBox_fortXX->value();
-				retval = ptr->runReadGrace(stream.str(), totalIntegral);
-				if(!retval) std::cout << " ERROR! ReadGrace method failed to find any cross-section data from \"" << stream.str() << "\".\n";
-			}
-
-			if(ui->checkBox_cleanup->isChecked()) // Remove the intermediate file.
-				remove("qtfresco.tmp.out");
-
-			if(retval){
-				// Draw the distribution if the calculation completed successfully.
-				ptr->draw(ui->checkBox_drawPrev->isChecked());
-				
-				// Draw the external data TGraph.
-				if(ui->checkBox_drawData->isChecked())
-					ptr->drawData(ui->lineEdit_dataDrawOpt->text().toStdString());
-
-				// Print the total integral in the window.
-				std::stringstream stream; stream << totalIntegral;
-				QString str = QString::fromStdString(stream.str());
-				ui->lineEdit_integral->setText(str);
-					
-				// Write graph to file if user has requested to save all graphs.
-				if(ui->checkBox_saveAll->isChecked())
-					on_pushButton_save_clicked();
-			}
+			this->scanFrescoOutput();
 		}
 		else std::cout << " ERROR! Failed to run fresco.\n";
 	}
@@ -128,14 +138,17 @@ void MainWindow::on_pushButton_save_clicked()
 	}
 }
 
-void MainWindow::on_pushButton_redraw_clicked()
+void MainWindow::on_pushButton_rescan_clicked()
 {
-	ptr->draw();
+	this->scanFrescoOutput();
 }
 
 void MainWindow::on_pushButton_reset_clicked()
 {
 	ptr->reset();
+	ui->pushButton_save->setDisabled(true);
+	ui->pushButton_rescan->setDisabled(true);
+	ui->pushButton_reset->setDisabled(true);
 }
 
 void MainWindow::on_pushButton_quit_clicked()
