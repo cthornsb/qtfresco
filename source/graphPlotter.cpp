@@ -11,6 +11,7 @@
 #include "TGraphErrors.h"
 #include "TCanvas.h"
 #include "TAxis.h"
+#include "TKey.h"
 
 #include "TSystem.h"
 #include "TApplication.h"
@@ -194,11 +195,17 @@ bool graphPlotter::loadExternalDataFile(const std::string &filename){
 
 bool graphPlotter::readExternalDataFile(std::vector<std::string> &objNames){
 	if(!externalFile || !externalFile->IsOpen()) return false;
-	TList *keyList = externalFile->GetListOfKeys();
-	for(int i = 0; i < keyList->GetEntries(); i++){
-		if(debug) std::cout << " debug: " << i << " - " << keyList->At(i)->GetName() << std::endl;
-		objNames.push_back(std::string(keyList->At(i)->GetName()));
-	}
+
+        TIter nextKey(externalFile->GetListOfKeys());
+        TKey *key;
+        while((key=(TKey*)nextKey())){
+                std::string name = key->GetName();
+                std::string className = key->GetClassName();
+                if(debug) std::cout << " debug: name=\"" << name << "\", class=\"" << className << "\"\n";
+                if(className == "TGraph" || className == "TGraphErrors")
+                        objNames.push_back(name);
+        }
+
 	return true;
 }
 

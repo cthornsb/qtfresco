@@ -223,6 +223,8 @@ void MainWindow::on_radioButton_fortXX_clicked()
 }
 
 void MainWindow::on_lineEdit_dataFilename_returnPressed(){
+	ui->comboBox_dataObjName->clear();
+	ui->comboBox_dataObjName->addItem("NONE");
 	if(ptr->loadExternalDataFile(ui->lineEdit_dataFilename->text().toStdString())){ // Open an external TFile.
 		std::vector<std::string> objNames;
 		if(ptr->readExternalDataFile(objNames)){ // Read the TFile and search for graphs.
@@ -237,8 +239,6 @@ void MainWindow::on_lineEdit_dataFilename_returnPressed(){
 	}
 	else{ // Failed to load the input file.
 		ui->comboBox_dataObjName->setDisabled(true);
-		ui->comboBox_dataObjName->clear();
-		ui->comboBox_dataObjName->addItem("NONE");
 		ui->lineEdit_dataDrawOpt->setDisabled(true);
 		ui->pushButton_drawData->setDisabled(true);
 		ui->checkBox_drawData->setDisabled(true);
