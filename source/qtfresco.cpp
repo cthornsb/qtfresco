@@ -46,9 +46,19 @@ void MainWindow::setOutputPrefix(const std::string &str_){
 	ui->lineEdit_prefix->setText(QString::fromStdString(str_));
 }
 
-void MainWindow::setDataFilename(const std::string &str_){
+bool MainWindow::setDataFilename(const std::string &str_, const std::string &gname_/*=""*/){
 	ui->lineEdit_dataFilename->setText(QString::fromStdString(str_));
-	updateDataSelect();
+	bool retval = updateDataSelect();
+	if(retval && !gname_.empty()){
+		for(int i = 0; i < ui->comboBox_dataObjName->count(); i++){
+			if(gname_ == ui->comboBox_dataObjName->itemText(i).toStdString()){
+				ui->comboBox_dataObjName->setCurrentIndex(i);
+				return true;
+			}
+		}
+		std::cout << " ERROR! TGraph named \"" << gname_ << "\" is not defined in data file.\n";
+	}
+	return retval;
 }
 
 void MainWindow::finalize(){
@@ -92,7 +102,7 @@ bool MainWindow::scanFrescoOutput(){
 	return true;
 }
 
-void MainWindow::updateDataSelect(){
+bool MainWindow::updateDataSelect(){
 	ui->comboBox_dataObjName->clear();
 	ui->comboBox_dataObjName->addItem("NONE");
 	if(ptr->loadExternalDataFile(ui->lineEdit_dataFilename->text().toStdString())){ // Open an external TFile.
@@ -106,6 +116,7 @@ void MainWindow::updateDataSelect(){
 			ui->pushButton_drawData->setEnabled(true);
 			ui->checkBox_drawData->setEnabled(true);
 			ui->label_dataObjName->setEnabled(true);
+			return true;
 		}
 	}
 	else{ // Failed to load the input file.
@@ -115,6 +126,7 @@ void MainWindow::updateDataSelect(){
 		ui->checkBox_drawData->setDisabled(true);
 		ui->label_dataObjName->setDisabled(true);
 	}
+	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

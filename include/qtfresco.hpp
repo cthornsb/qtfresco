@@ -27,7 +27,7 @@ public:
 	
 	void setOutputPrefix(const std::string &str_);
 
-	void setDataFilename(const std::string &str_);
+	bool setDataFilename(const std::string &str_, const std::string &gname_="");
 	
 	void finalize();
 
@@ -79,7 +79,7 @@ private:
 
 	bool scanFrescoOutput();
 
-	void updateDataSelect();
+	bool updateDataSelect();
 };
 
 #endif // QTFRESCO_H

@@ -85,8 +85,15 @@ int main(int argc, char *argv[])
 	// MainWindow will delete the instance of graphPlotter.
 	win.setPointer(new graphPlotter());
 
-	if(!dataFilename.empty()) // The program will crash if we do this before setting the graphPlotter pointer.
-		win.setDataFilename(dataFilename);
+	if(!dataFilename.empty()){ // The program will crash if we do this before setting the graphPlotter pointer.
+		size_t index = dataFilename.find(':');
+		if(index == std::string::npos)
+			win.setDataFilename(dataFilename);
+		else{
+			std::string gname = dataFilename.substr(index+1);
+			win.setDataFilename(dataFilename.substr(0, index), gname);
+		}	
+	}
 
 	return app.exec();
 }
