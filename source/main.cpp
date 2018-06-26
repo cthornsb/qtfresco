@@ -32,8 +32,9 @@ int main(int argc, char *argv[])
 	baseOpts.push_back(optionExt("input", required_argument, NULL, 'i', "<filename>", "Specifies a fresco input file to process."));
 	baseOpts.push_back(optionExt("output", required_argument, NULL, 'o', "<filename>", "Specifies the name of the output file."));
 	baseOpts.push_back(optionExt("name", required_argument, NULL, 'n', "<name>", "Specify the output prefix for the TGraph or TCanvas."));
+	baseOpts.push_back(optionExt("data", required_argument, NULL, 'd', "<filename>", "Specify the root file containing data to display."));
 
-	optstr = "hi:o:n:";
+	optstr = "hi:o:n:d:";
 
 	// Build the vector of all command line options.
 	for(std::vector<optionExt>::iterator iter = baseOpts.begin(); iter != baseOpts.end(); iter++){
@@ -47,6 +48,7 @@ int main(int argc, char *argv[])
 	int idx = 0;
 	int retval = 0;
 	
+	std::string dataFilename;
 	while ( (retval = getopt_long(argc, argv, optstr.c_str(), longOpts.data(), &idx)) != -1) {
 		if(retval == 0x0 || retval == 0x3F){ // Unknown option, '?'
 			return 1;
@@ -65,6 +67,9 @@ int main(int argc, char *argv[])
 				case 'n' :
 					win.setOutputPrefix(optarg);
 					break;
+				case 'd' : 
+					dataFilename = optarg;
+					break;
 				default:
 					break;
 			}
@@ -79,6 +84,9 @@ int main(int argc, char *argv[])
 
 	// MainWindow will delete the instance of graphPlotter.
 	win.setPointer(new graphPlotter());
+
+	if(!dataFilename.empty()) // The program will crash if we do this before setting the graphPlotter pointer.
+		win.setDataFilename(dataFilename);
 
 	return app.exec();
 }

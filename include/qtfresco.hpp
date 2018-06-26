@@ -26,6 +26,8 @@ public:
 	void setOutputFilename(const std::string &str_);
 	
 	void setOutputPrefix(const std::string &str_);
+
+	void setDataFilename(const std::string &str_);
 	
 	void finalize();
 
@@ -76,6 +78,8 @@ private:
 	graphPlotter *ptr;
 
 	bool scanFrescoOutput();
+
+	void updateDataSelect();
 };
 
 #endif // QTFRESCO_H

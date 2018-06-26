@@ -46,6 +46,11 @@ void MainWindow::setOutputPrefix(const std::string &str_){
 	ui->lineEdit_prefix->setText(QString::fromStdString(str_));
 }
 
+void MainWindow::setDataFilename(const std::string &str_){
+	ui->lineEdit_dataFilename->setText(QString::fromStdString(str_));
+	updateDataSelect();
+}
+
 void MainWindow::finalize(){
 	if(ui->lineEdit_output->text().isEmpty()) ui->lineEdit_output->setText("frescout");
 	if(ui->lineEdit_prefix->text().isEmpty()) ui->lineEdit_prefix->setText("graph");
@@ -85,6 +90,31 @@ bool MainWindow::scanFrescoOutput(){
 		on_pushButton_save_clicked();
 
 	return true;
+}
+
+void MainWindow::updateDataSelect(){
+	ui->comboBox_dataObjName->clear();
+	ui->comboBox_dataObjName->addItem("NONE");
+	if(ptr->loadExternalDataFile(ui->lineEdit_dataFilename->text().toStdString())){ // Open an external TFile.
+		std::vector<std::string> objNames;
+		if(ptr->readExternalDataFile(objNames)){ // Read the TFile and search for graphs.
+			ui->comboBox_dataObjName->setEnabled(true);
+			for(std::vector<std::string>::iterator iter = objNames.begin(); iter != objNames.end(); iter++){ // Add all names to the combo list.
+				ui->comboBox_dataObjName->addItem(QString::fromStdString(*iter));
+			}
+			ui->lineEdit_dataDrawOpt->setEnabled(true);
+			ui->pushButton_drawData->setEnabled(true);
+			ui->checkBox_drawData->setEnabled(true);
+			ui->label_dataObjName->setEnabled(true);
+		}
+	}
+	else{ // Failed to load the input file.
+		ui->comboBox_dataObjName->setDisabled(true);
+		ui->lineEdit_dataDrawOpt->setDisabled(true);
+		ui->pushButton_drawData->setDisabled(true);
+		ui->checkBox_drawData->setDisabled(true);
+		ui->label_dataObjName->setDisabled(true);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -227,26 +257,7 @@ void MainWindow::on_radioButton_fortXX_clicked()
 }
 
 void MainWindow::on_lineEdit_dataFilename_returnPressed(){
-	ui->comboBox_dataObjName->clear();
-	ui->comboBox_dataObjName->addItem("NONE");
-	if(ptr->loadExternalDataFile(ui->lineEdit_dataFilename->text().toStdString())){ // Open an external TFile.
-		std::vector<std::string> objNames;
-		if(ptr->readExternalDataFile(objNames)){ // Read the TFile and search for graphs.
-			ui->comboBox_dataObjName->setEnabled(true);
-			for(std::vector<std::string>::iterator iter = objNames.begin(); iter != objNames.end(); iter++){ // Add all names to the combo list.
-				ui->comboBox_dataObjName->addItem(QString::fromStdString(*iter));
-			}
-			ui->lineEdit_dataDrawOpt->setEnabled(true);
-			ui->pushButton_drawData->setEnabled(true);
-			ui->checkBox_drawData->setEnabled(true);
-		}
-	}
-	else{ // Failed to load the input file.
-		ui->comboBox_dataObjName->setDisabled(true);
-		ui->lineEdit_dataDrawOpt->setDisabled(true);
-		ui->pushButton_drawData->setDisabled(true);
-		ui->checkBox_drawData->setDisabled(true);
-	}
+	updateDataSelect();
 }
 
 void MainWindow::on_comboBox_dataObjName_currentIndexChanged(){
