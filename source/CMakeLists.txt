@@ -17,5 +17,5 @@ add_custom_command(OUTPUT ${UIC_FILENAME} COMMAND ${UIC_EXECUTABLE} ${QTFRESCO_U
 #Build qtfresco executable.
 add_executable(qtfresco main.cpp qtfresco.cpp ${MOC_FILENAME} graphPlotter.cpp frescout.cpp readGrace.cpp)
 target_include_directories(qtfresco PUBLIC ${QT_INC_DIR} ${QT_GUI_INC_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(qtfresco ${QT_GUI_LIB} ${QT_CORE_LIB} ${SimpleScan_CORE_LIB} ${SimpleScan_OPT_LIB} ${ROOT_LIBRARIES})
+target_link_libraries(qtfresco ${QT_GUI_LIB} ${QT_CORE_LIB} ${SimpleScan_CORE_LIB} ${SimpleScan_OPT_LIB} -lSimpleChi -lSimpleTool ${ROOT_LIBRARIES}) #TEMPORARY
 install(TARGETS qtfresco DESTINATION bin)

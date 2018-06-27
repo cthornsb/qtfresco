@@ -116,6 +116,9 @@ bool MainWindow::updateDataSelect(){
 			ui->pushButton_drawData->setEnabled(true);
 			ui->checkBox_drawData->setEnabled(true);
 			ui->label_dataObjName->setEnabled(true);
+			ui->pushButton_minimize->setEnabled(true);
+			ui->label_specFactor->setEnabled(true);
+			ui->lineEdit_specFactor->setEnabled(true);
 			return true;
 		}
 	}
@@ -125,6 +128,9 @@ bool MainWindow::updateDataSelect(){
 		ui->pushButton_drawData->setDisabled(true);
 		ui->checkBox_drawData->setDisabled(true);
 		ui->label_dataObjName->setDisabled(true);
+		ui->pushButton_minimize->setDisabled(true);
+		ui->label_specFactor->setDisabled(true);
+		ui->lineEdit_specFactor->setDisabled(true);
 	}
 	return false;
 }
@@ -202,6 +208,25 @@ void MainWindow::on_pushButton_quit_clicked()
 	delete this;
 }
 
+void MainWindow::on_pushButton_drawData_clicked(){
+	ptr->drawData(ui->lineEdit_dataDrawOpt->text().toStdString());
+}
+
+void MainWindow::on_pushButton_minimize_clicked(){
+	double A, chi2;
+	if(ptr->runChisquare(A, chi2)){
+		// Draw the distribution if the calculation completed successfully.
+		ptr->draw(ui->checkBox_drawPrev->isChecked());
+	
+		// Draw the external data TGraph.
+		ptr->drawData(ui->lineEdit_dataDrawOpt->text().toStdString());
+
+		std::stringstream stream1; stream1 << A;
+		//std::stringstream stream2; stream2 << chi2;
+		ui->lineEdit_specFactor->setText(QString::fromStdString(stream1.str()));
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Radio buttons
 ///////////////////////////////////////////////////////////////////////////////
@@ -277,10 +302,6 @@ void MainWindow::on_comboBox_dataObjName_currentIndexChanged(){
 		ptr->setExternalDataGraph(ui->comboBox_dataObjName->currentText().toStdString());
 	else // De-select all objects
 		ptr->setExternalDataGraph();
-}
-
-void MainWindow::on_pushButton_drawData_clicked(){
-	ptr->drawData(ui->lineEdit_dataDrawOpt->text().toStdString());
 }
 
 void MainWindow::handleCleanup(){

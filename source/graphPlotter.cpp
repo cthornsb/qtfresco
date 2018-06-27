@@ -2,6 +2,8 @@
 #include <sstream>
 #include <fstream>
 
+#include "simpleChisquare.hpp"
+
 #include "graphPlotter.hpp"
 #include "frescout.hpp"
 #include "readGrace.hpp"
@@ -134,6 +136,37 @@ bool graphPlotter::runReadGrace(const std::string &filename, double &integral){
 	bool retval = readGrace(filename, currGraph, integral, debug);
 
 	return retval;
+}
+
+bool graphPlotter::runChisquare(double &A, double &chi2){
+	chisquare chi;
+	
+	// Set user options for chi-square minimization.
+	//chi.setFitRange(0, 180);
+	chi.setParLimits(0, 1);
+	//chi.setAddConstTerm(true);
+
+	// Set the graphs.
+	chi.setTheoreticalGraph((TGraphErrors*)currGraph);
+	chi.setExperimentalGraph(dataGraph);
+
+	// Run the minimization.
+	if(chi.compute()){
+		A = chi.getA();
+		chi2 = chi.getChi2();
+
+		// Copy the current graph to the previous one and scale the current one.
+		double x, y;
+		for(int i = 0; i < 181; i++){
+			currGraph->GetPoint(i, x, y);
+			prevGraph->SetPoint(i, x, y);
+			currGraph->SetPoint(i, x, y*A);
+		}
+
+		return true;
+	}
+
+	return false;
 }
 
 int graphPlotter::write(const std::string &filename, const int &format, const std::string &name/*="graph"*/, const bool &overwrite/*=true*/){

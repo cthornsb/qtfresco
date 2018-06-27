@@ -35,6 +35,8 @@ class graphPlotter : public TApplication {
 
 	bool runReadGrace(const std::string &filename, double &integral);
 
+	bool runChisquare(double &A, double &chi2);
+
 	int write(const std::string &filename, const int &format, const std::string &name="graph", const bool &overwrite=true);
 
 	bool loadExternalDataFile(const std::string &filename);

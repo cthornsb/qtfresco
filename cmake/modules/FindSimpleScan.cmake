@@ -7,11 +7,12 @@
 # SimpleScan_FOUND          If the SimpleScan installation is found
 # SimpleScan_INCLUDE_DIR    PATH to the include directory
 # SimpleScan_BIN_DIR        PATH to the bin directory
+# SimpleScan_LIB_DIR        PATH to the lib directory
 # SimpleScan_SCAN_LIB       PATH to the SimpleScan scan library
 # SimpleScan_CORE_LIB       PATH to the SimpleScan core library
 # SimpleScan_OPT_LIB        PATH to the option handler library
 #
-# Last updated by C. R. Thornsberry (cthornsb@vols.utk.edu) on June 6th, 2018
+# Last updated by C. R. Thornsberry (cthornsb@vols.utk.edu) on June 26th, 2018
 #
 # - Possible use of this cmake module.
 # Copy the following 4 lines into your main CMakeLists.txt
@@ -37,6 +38,11 @@ find_path(SimpleScan_BIN_DIR
 	NAMES simpleScan
 	PATHS /opt/simpleScan/install
 	PATH_SUFFIXES bin)
+
+find_path(SimpleScan_LIB_DIR
+	NAMES libSimpleScan.so
+	PATHS /opt/simpleScan/install
+	PATH_SUFFIXES lib)
 
 find_library(SimpleScan_SCAN_LIB
 	NAMES libSimpleScan.so

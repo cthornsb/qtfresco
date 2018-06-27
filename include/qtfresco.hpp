@@ -42,6 +42,10 @@ private slots:
 
 	void on_pushButton_quit_clicked();
 
+	void on_pushButton_drawData_clicked();
+
+	void on_pushButton_minimize_clicked();
+
 	void disableRadio();
 
 	void enableRadio();
@@ -61,8 +65,6 @@ private slots:
 	void on_lineEdit_dataFilename_returnPressed();
 
 	void on_comboBox_dataObjName_currentIndexChanged();
-
-	void on_pushButton_drawData_clicked();
 
 	void handleCleanup();
 
